@@ -1,9 +1,6 @@
 const MongoClient = require("mongodb");
-// const connURL = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/";
-// "mongodb://<dbuser>:<dbpassword>@ds013848.mlab.com:13848/heroku_6bfvmk84"
 const connURL =
-  "mongodb://heroku_6bfvmk84:mrhm6umoe37ccoitr88tlckvj8@ds013848.mlab.com:13848/heroku_6bfvmk84" ||
-  "mongodb://127.0.0.1:27017/PromoClub";
+  process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/PromoClub";
 
 const collectionName = "Users";
 const isEmpty = require("lodash/isEmpty");
