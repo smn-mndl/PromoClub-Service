@@ -8,6 +8,7 @@ const isEmpty = require("lodash/isEmpty");
 const users = {};
 
 users.RegisterUsers = payload => {
+  console.log("process.env", process.env);
   return MongoClient.connect(connURL).then(client => {
     const connct = client.db().collection(collectionName);
     if (!isEmpty(payload)) {
@@ -42,7 +43,7 @@ users.RegisterUsers = payload => {
 };
 
 users.LoginUser = payload => {
-  console.log("payload in login", payload.email);
+  console.log("process.env", process.env);
   return MongoClient.connect(connURL, { useUnifiedTopology: true }).then(
     client => {
       const connct2 = client.db().collection(collectionName);
