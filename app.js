@@ -8,6 +8,7 @@ var cors = require("cors");
 require("dotenv").config();
 const multer = require("multer");
 const fs = require("fs");
+const axios = require("axios");
 
 var indexRouter = require("./routes/index");
 var registerRouter = require("./routes/users");
@@ -26,6 +27,7 @@ app.set("view engine", "jade");
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -34,39 +36,26 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/registerUsers", registerRouter);
 app.use("/loginUser", loginRouter);
-app.use("/testAPI", testRouter);
+// app.use("/testAPI", testRouter);
 app.use("/testPost", testPostRouter);
 app.use("/uploadFile", uploadFileRouter);
 app.use("/publishData", publishDataRouter);
 app.use("/getAllPublishedData", getAllPublishedDataRouter);
+app.use("/image-upload", testRouter);
 
 // create user
 
-app.post("/api/createUser", function(req, res) {
-  // var userEmail = req.body.user_email;
-
-  var data = req.body;
-
-  imageRef.push(data, function(err) {
-    if (err) {
-      res.send(err);
-    } else {
-      // var key = Object.keys(snapshot.val())[0];
-
-      // console.log(key);
-
-      res.json({ message: "Success: User Save.", result: true });
-    }
-  });
-});
+// app.post("/api/createUser", function (req, res) {
+//   axios.post()
+// });
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   console.log("error", req.body);
   // set locals, only providing error in development
   res.locals.message = err.message;

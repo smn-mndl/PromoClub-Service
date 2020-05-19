@@ -2,18 +2,28 @@ const MongoClient = require("mongodb");
 var admin = require("firebase-admin");
 const googleStorage = require("@google-cloud/storage");
 const { Storage } = require("@google-cloud/storage");
+var AWS = require("aws-sdk");
+const fs = require("fs");
 
 var serviceAccount = require(process.env.GOOGLE_APPLICATION_CREDENTIALS);
 const storage = new Storage({
   projectId: "promoclub-ind",
-  keyFilename: serviceAccount
+  keyFilename: serviceAccount,
 });
+
+// Create an S3 client
+const s3 = new AWS.S3({
+  accessKeyId: "AKIAJHJYXKAYLBDB5L5Q",
+  secretAccessKey: "GWJ51lhqIfkVsCI0Mp1VjgH1pKMHXzmiQ7CIascT",
+});
+
+var bucketName1 = "yourclub";
 
 var serviceAccount = require(process.env.GOOGLE_APPLICATION_CREDENTIALS);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: "promoclub-ind.appspot.com"
+  storageBucket: "promoclub-ind.appspot.com",
 });
 
 const connURL =
@@ -28,79 +38,44 @@ const isEmpty = require("lodash/isEmpty");
 const files = {};
 
 files.UploadedFile = (usrDtls, fileDtls) => {
-  // console.log("payload", fileDtls);
-  return MongoClient.connect(connURL).then(client => {
+  return MongoClient.connect(connURL).then((client) => {
     const connct1 = client.db().collection(userDtlsColltn);
     if (!isEmpty(usrDtls)) {
       return connct1
         .find({ email: usrDtls.email })
         .toArray()
-        .then(data => {
-          if (data.length !== 1) {
-            return MongoClient.connect(connURL).then(client2 => {
-              const connect2 = client2.db().collection(publishedDataColl);
+        .then((data) => {
+          if (data.length === 1) {
+            return MongoClient.connect(connURL).then((client2) => {
+              // const connect2 = client2.db().collection(publishedDataColl);
 
-              /**
-               * TODO(developer): Uncomment the following lines before running the sample.
-               */
-              const bucketName = "promoclub-ind.appspot.com";
-              const filename = process.env.DIR;
-              console.log("filename", filename);
-              // Creates a client
-              const storage = new Storage();
+              // Setting up S3 upload parameters
+              const params = {
+                Bucket: bucketName1,
+              };
 
-              async function getMetadata() {
-                // Gets the metadata for the file
-                const [metadata] = await storage
-                  .bucket(bucketName)
-                  .file("imp_docs.txt")
-                  .getMetadata();
+              s3.createBucket(params, function (err, data) {
+                if (err) console.log(err, err.stack);
+                else console.log("Bucket Created Successfully", data.Location);
+              });
 
-                console.log(`File: ${metadata.name}`);
-                console.log(`Bucket: ${metadata.bucket}`);
-                console.log(`Storage class: ${metadata.storageClass}`);
-                console.log(`Self link: ${metadata.selfLink}`);
-                console.log(`ID: ${metadata.id}`);
-                console.log(`Size: ${metadata.size}`);
-                console.log(`Updated: ${metadata.updated}`);
-                console.log(`Generation: ${metadata.generation}`);
-                console.log(`Metageneration: ${metadata.metageneration}`);
-                console.log(`Etag: ${metadata.etag}`);
-                console.log(`Owner: ${metadata.owner}`);
-                console.log(`Component count: ${metadata.component_count}`);
-                console.log(`Crc32c: ${metadata.crc32c}`);
-                console.log(`md5Hash: ${metadata.md5Hash}`);
-                console.log(`Cache-control: ${metadata.cacheControl}`);
-                console.log(`Content-type: ${metadata.contentType}`);
-                console.log(
-                  `Content-disposition: ${metadata.contentDisposition}`
-                );
-                console.log(`Content-encoding: ${metadata.contentEncoding}`);
-                console.log(`Content-language: ${metadata.contentLanguage}`);
-                console.log(`Media link: ${metadata.mediaLink}`);
-                console.log(`KMS Key Name: ${metadata.kmsKeyName}`);
-                console.log(`Temporary Hold: ${metadata.temporaryHold}`);
-                console.log(`Event-based hold: ${metadata.eventBasedHold}`);
-                console.log(
-                  `Effective Expiration Time: ${metadata.effectiveExpirationTime}`
-                );
-                console.log(`Metadata: ${metadata.metadata}`);
-              }
+              // // Read content from the file
+              // const fileContent = fs.readFileSync("./DSC_3720_New.jpg");
+              // console.log("fileContent", fileContent);
 
-              getMetadata().catch(console.error);
-
-              // bucket.upload(
-              //   `C:\Users\Suman\Documents\imp_docs.txt`,
-              //   (err, file, apiResponse) => {
-              //     //Do Stuff
+              // // Uploading files to the bucket
+              // s3.upload(params, function (err, data) {
+              //   if (err) {
+              //     throw err;
               //   }
-              // );
+              //   console.log(`File uploaded successfully. ${data.Location}`);
+              // });
             });
           } else {
             // MongoClient.close();
             return {
               result: { errorText: "Invalid email", isValid: false },
-              status: "success"
+              status: "success",
             };
           }
         });
@@ -108,6 +83,26 @@ files.UploadedFile = (usrDtls, fileDtls) => {
       // MongoClient.close();
       return { result: "Not Valid Data" };
     }
+  });
+};
+
+const uploadFile = (fileName) => {
+  // Read content from the file
+  const fileContent = fs.readFileSync(fileName);
+  console.log("fileContent", fileContent);
+  // Setting up S3 upload parameters
+  const params = {
+    Bucket: bucketName1,
+    Key: "cat.jpg", // File name you want to save as in S3
+    Body: fileContent,
+  };
+
+  // Uploading files to the bucket
+  s3.upload(params, function (err, data) {
+    if (err) {
+      throw err;
+    }
+    console.log(`File uploaded successfully. ${data.Location}`);
   });
 };
 
