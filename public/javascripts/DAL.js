@@ -7,31 +7,31 @@ const isEmpty = require("lodash/isEmpty");
 
 const users = {};
 
-users.RegisterUsers = payload => {
+users.RegisterUsers = (payload) => {
   console.log("process.env", process.env);
-  return MongoClient.connect(connURL).then(client => {
+  return MongoClient.connect(connURL).then((client) => {
     const connct = client.db().collection(collectionName);
     if (!isEmpty(payload)) {
       return connct
         .find({ email: payload.email })
         .toArray()
-        .then(data => {
+        .then((data) => {
           if (data.length !== 1) {
-            return connct.insertOne(payload).then(data => {
+            return connct.insertOne(payload).then((data) => {
               // MongoClient.close();
               return {
                 result: {
                   successText: "Data saved successfully",
-                  isValid: true
+                  isValid: true,
                 },
-                status: "success"
+                status: "success",
               };
             });
           } else {
             // MongoClient.close();
             return {
               result: { errorText: "Invalid email", isValid: false },
-              status: "success"
+              status: "success",
             };
           }
         });
@@ -42,14 +42,14 @@ users.RegisterUsers = payload => {
   });
 };
 
-users.LoginUser = payload => {
+users.LoginUser = (payload) => {
   console.log("process.env", process.env);
   return MongoClient.connect(connURL, { useUnifiedTopology: true }).then(
-    client => {
+    (client) => {
       const connct2 = client.db().collection(collectionName);
       if (!isEmpty(payload)) {
         console.log("the2323n");
-        return connct2.findOne({ email: payload.email }).then(data => {
+        return connct2.findOne({ email: payload.email }).then((data) => {
           console.log("then", data);
           if (data.firstpassword === payload.password) {
             return {
@@ -60,15 +60,15 @@ users.LoginUser = payload => {
                   firstname: data.firstName,
                   lastname: data.lastname,
                   email: data.email,
-                  gender: data.gender
-                }
+                  gender: data.gender,
+                },
               },
-              status: "success"
+              status: "success",
             };
           } else {
             return {
               result: { errorText: "Invalid user", isValid: false },
-              status: "fail"
+              status: "fail",
             };
           }
         });

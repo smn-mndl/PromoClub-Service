@@ -1,26 +1,45 @@
 const aws = require("aws-sdk");
-const express = require("express");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
+const path = require("path");
 
-aws.config.update({
-  accessKeyId: "AKIAJHJYXKAYLBDB5L5Q",
-  secretAccessKey: "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",
-  region: "ap-south-1",
+const s3 = new aws.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+  Bucket: process.env.AWS_BUCKET,
 });
-const s3 = new aws.S3();
-
-const upload = multer({
+const profileImgUpload = multer({
   storage: multerS3({
     s3: s3,
-    bucket: "yourclub",
-    metadata: function (req, file, cb) {
-      cb(null, { fieldName: "TESTING_METADATA!" });
-    },
+    bucket: process.env.AWS_BUCKET,
     key: function (req, file, cb) {
-      cb(null, Date.now().toString());
+      cb(
+        null,
+        path.basename(file.originalname, path.extname(file.originalname)) +
+          "-" +
+          Date.now() +
+          path.extname(file.originalname)
+      );
     },
   }),
-});
+  limits: { fileSize: 100000000 }, // In bytes: 2000000 bytes = 2 MB
+  fileFilter: function (req, file, cb) {
+    checkFileType(file, cb);
+  },
+}).single("profileImage");
 
-module.exports = upload;
+function checkFileType(file, cb) {
+  // Allowed ext
+  const filetypes = /jpeg|jpg|png|gif/;
+  // Check ext
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  // Check mime
+  const mimetype = filetypes.test(file.mimetype);
+  if (mimetype && extname) {
+    return cb(null, true);
+  } else {
+    cb("Error: Images Only!");
+  }
+}
+module.exports = profileImgUpload;

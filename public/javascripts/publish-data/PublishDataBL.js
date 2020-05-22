@@ -1,8 +1,8 @@
-const db = require("./UploadFileDAL");
+const db = require("./PublishDataDAL");
 const busLog = {};
 
-busLog.getAllPublishedData = (usrDtls, fileDtls) => {
-  return db.allPblshdData(usrDtls, fileDtls).then(item => {
+busLog.publishDataBL = (reqBody, imageName, imageLocation) => {
+  return db.publishDataDAL(reqBody, imageName, imageLocation).then((item) => {
     if (item.insertedCount === 1) {
       return item;
     } else {

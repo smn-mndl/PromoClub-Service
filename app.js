@@ -18,6 +18,7 @@ const testPostRouter = require("./routes/testPost");
 const uploadFileRouter = require("./routes/upload-file");
 const publishDataRouter = require("./routes/publish-data");
 const getAllPublishedDataRouter = require("./routes/get-all-publish-data");
+const getPublishedDataLengthRouter = require("./routes/get-all-publish-data-length");
 
 var app = express();
 
@@ -42,6 +43,7 @@ app.use("/uploadFile", uploadFileRouter);
 app.use("/publishData", publishDataRouter);
 app.use("/getAllPublishedData", getAllPublishedDataRouter);
 app.use("/image-upload", testRouter);
+app.use("/getPublishedDataLength", getPublishedDataLengthRouter);
 
 // create user
 
