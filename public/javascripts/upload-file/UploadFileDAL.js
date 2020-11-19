@@ -1,7 +1,7 @@
 const MongoClient = require("mongodb");
 
 const connURL =
-  process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/PromoClub";
+  process.env.MONGODB_URI2 || "mongodb://127.0.0.1:27017/PromoClub";
 const connURL2 = "mongodb://127.0.0.1:27017/PromoClub";
 
 const fileUpldCollctn = "UploadedFile";
