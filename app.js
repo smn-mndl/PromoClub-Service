@@ -19,7 +19,8 @@ const uploadFileRouter = require("./routes/upload-file");
 const publishDataRouter = require("./routes/publish-data");
 const getAllPublishedDataRouter = require("./routes/get-all-publish-data");
 const getPublishedDataLengthRouter = require("./routes/get-all-publish-data-length");
-
+const coverPictureRouter = require("./routes/cover-picture");
+const getUserPublishedData = require("./routes/get-user-published-data");
 var app = express();
 
 // view engine setup
@@ -44,6 +45,8 @@ app.use("/publishData", publishDataRouter);
 app.use("/getAllPublishedData", getAllPublishedDataRouter);
 app.use("/image-upload", testRouter);
 app.use("/getPublishedDataLength", getPublishedDataLengthRouter);
+app.use("/coverPicture", coverPictureRouter);
+app;
 
 // create user
 
