@@ -7,20 +7,28 @@ const collectionName = "PublishedData";
 const pblshdData = {};
 
 pblshdData.allPblshdDataLength = () => {
-  return MongoClient.connect(connURL).then((client) => {
-    const connct = client.db().collection(collectionName);
-    return connct
-      .find()
-      .toArray()
-      .then((data) => {
-        return {
-          result: {
-            publishedDataCount: data.length,
-          },
-          status: "success",
-        };
-      });
-  });
+  return MongoClient.connect(connURL, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    keepAlive: 1,
+  })
+    .then((clnt) => {
+      const collection = clnt.db().collection("Users");
+      return collection
+        .find()
+        .toArray()
+        .then((data) => {
+          return {
+            result: {
+              publishedDataCount: data.length,
+            },
+            status: "success",
+          };
+        });
+    })
+    .catch((err) => {
+      console.log("erroror", err);
+    });
 };
 
 module.exports = pblshdData;

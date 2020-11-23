@@ -8,7 +8,11 @@ const isEmpty = require("lodash/isEmpty");
 const pblshdData = {};
 
 pblshdData.userPblshdData = () => {
-  return MongoClient.connect(connURL).then((client) => {
+  return MongoClient.connect(connURL, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    keepAlive: 1,
+  }).then((client) => {
     const connct = client.db().collection(collectionName);
     return connct
       .find()

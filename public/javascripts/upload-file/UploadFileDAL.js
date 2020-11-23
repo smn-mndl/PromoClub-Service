@@ -12,7 +12,11 @@ const isEmpty = require("lodash/isEmpty");
 const files = {};
 
 files.UploadedFile = (usrDtls, fileDtls) => {
-  return MongoClient.connect(connURL).then((client) => {
+  return MongoClient.connect(connURL, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    keepAlive: 1,
+  }).then((client) => {
     const connct1 = client.db().collection(userDtlsColltn);
     if (!isEmpty(usrDtls)) {
       return connct1

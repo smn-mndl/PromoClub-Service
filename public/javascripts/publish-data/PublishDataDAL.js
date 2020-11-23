@@ -11,7 +11,11 @@ const publishes = {};
 
 publishes.publishDataDAL = (reqBody, imageName, imageLocation) => {
   const { email, title, desc, link } = reqBody;
-  return MongoClient.connect(connURL).then((client) => {
+  return MongoClient.connect(connURL, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    keepAlive: 1,
+  }).then((client) => {
     const connct1 = client.db().collection(userDtlsColltn);
     if (!isEmpty(email)) {
       return connct1
