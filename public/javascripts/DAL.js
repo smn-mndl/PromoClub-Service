@@ -47,7 +47,7 @@ users.RegisterUsers = (payload) => {
 };
 
 users.LoginUser = (payload) => {
-  console.log("process.env", process.env);
+  console.log("process.env inside LoginUser");
   return MongoClient.connect(connURL, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
@@ -55,23 +55,22 @@ users.LoginUser = (payload) => {
   }).then((client) => {
     const connct2 = client.db().collection(collectionName);
     if (!isEmpty(payload)) {
-      console.log("the2323n");
       return connct2.findOne({ email: payload.email }).then((data) => {
-        console.log("then", data);
-        if (data.firstpassword === payload.password) {
-          return {
-            result: {
-              successText: "Valid user",
-              isValid: true,
-              userDetails: {
-                firstname: data.firstName,
-                lastname: data.lastname,
-                email: data.email,
-                gender: data.gender,
-              },
-            },
-            status: "success",
-          };
+        if (data && data.firstpassword === payload.password) {
+          return data;
+          // return {
+          //   result: {
+          //     successText: "Valid user",
+          //     isValid: true,
+          //     userDetails: {
+          //       firstname: data.firstName,
+          //       lastname: data.lastname,
+          //       email: data.email,
+          //       gender: data.gender,
+          //     },
+          //   },
+          //   status: "success",
+          // };
         } else {
           return {
             result: { errorText: "Invalid user", isValid: false },

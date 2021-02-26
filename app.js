@@ -9,6 +9,20 @@ require("dotenv").config();
 const multer = require("multer");
 const fs = require("fs");
 const axios = require("axios");
+var { graphqlHTTP } = require("express-graphql");
+var {
+  buildSchema,
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLID,
+  GraphQLInt,
+  GraphQLSchema,
+} = require("graphql");
+
+// Construct a schema, using GraphQL schema language
+// var schema = new GraphQLSchema({
+//   query: LoginQuery,
+// });
 
 var indexRouter = require("./routes/index");
 var registerRouter = require("./routes/users");
@@ -21,6 +35,10 @@ const getAllPublishedDataRouter = require("./routes/get-all-publish-data");
 const getPublishedDataLengthRouter = require("./routes/get-all-publish-data-length");
 const coverPictureRouter = require("./routes/cover-picture");
 const getUserPublishedData = require("./routes/get-user-published-data");
+const latestPhotosRouter = require("./routes/get-latest-photos");
+const photoDetailsRouter = require("./routes/get-photo-details");
+const LoginSchema = require("./public/graphql/schema/login/login-schema");
+const saveToCartRouter = require("./routes/save-to-cart");
 var app = express();
 
 // view engine setup
@@ -37,7 +55,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/registerUsers", registerRouter);
-app.use("/loginUser", loginRouter);
+// app.use("/loginUser", loginRouter);
 // app.use("/testAPI", testRouter);
 app.use("/testPost", testPostRouter);
 app.use("/uploadFile", uploadFileRouter);
@@ -46,8 +64,16 @@ app.use("/getAllPublishedData", getAllPublishedDataRouter);
 app.use("/image-upload", testRouter);
 app.use("/getPublishedDataLength", getPublishedDataLengthRouter);
 app.use("/coverPicture", coverPictureRouter);
-app;
-
+app.use("/latestPhotos", latestPhotosRouter);
+app.use("/getPhotoDetails", photoDetailsRouter);
+app.use("/saveToCart", saveToCartRouter);
+app.use(
+  "/loginUser",
+  graphqlHTTP({
+    schema: LoginSchema,
+    graphiql: true,
+  })
+);
 // create user
 
 // app.post("/api/createUser", function (req, res) {
