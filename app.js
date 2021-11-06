@@ -6,7 +6,6 @@ var logger = require("morgan");
 const bodyParser = require("body-parser");
 var cors = require("cors");
 require("dotenv").config();
-const multer = require("multer");
 const fs = require("fs");
 const axios = require("axios");
 var { graphqlHTTP } = require("express-graphql");
@@ -27,10 +26,10 @@ var {
 var indexRouter = require("./routes/index");
 var registerRouter = require("./routes/users");
 var loginRouter = require("./routes/login");
-const testRouter = require("./routes/testAPI");
+// const testRouter = require("./routes/testAPI");
 const testPostRouter = require("./routes/testPost");
-const uploadFileRouter = require("./routes/upload-file");
-const publishDataRouter = require("./routes/publish-data");
+// const uploadFileRouter = require("./routes/upload-file");
+// const publishDataRouter = require("./routes/publish-data");
 const getAllPublishedDataRouter = require("./routes/get-all-publish-data");
 const getPublishedDataLengthRouter = require("./routes/get-all-publish-data-length");
 const coverPictureRouter = require("./routes/cover-picture");
@@ -39,6 +38,9 @@ const latestPhotosRouter = require("./routes/get-latest-photos");
 const photoDetailsRouter = require("./routes/get-photo-details");
 const LoginSchema = require("./public/graphql/schema/login/login-schema");
 const saveToCartRouter = require("./routes/save-to-cart");
+const passwordRecoveryRouter = require("./routes/forgot-password");
+const resetPasswordRouter = require("./routes/reset-password");
+const saveNewPasswordRouter = require("./routes/save-new-password");
 var app = express();
 
 // view engine setup
@@ -58,15 +60,18 @@ app.use("/registerUsers", registerRouter);
 // app.use("/loginUser", loginRouter);
 // app.use("/testAPI", testRouter);
 app.use("/testPost", testPostRouter);
-app.use("/uploadFile", uploadFileRouter);
-app.use("/publishData", publishDataRouter);
+// app.use("/uploadFile", uploadFileRouter);
+// app.use("/publishData", publishDataRouter);
 app.use("/getAllPublishedData", getAllPublishedDataRouter);
-app.use("/image-upload", testRouter);
+// app.use("/image-upload", testRouter);
 app.use("/getPublishedDataLength", getPublishedDataLengthRouter);
 app.use("/coverPicture", coverPictureRouter);
 app.use("/latestPhotos", latestPhotosRouter);
 app.use("/getPhotoDetails", photoDetailsRouter);
 app.use("/saveToCart", saveToCartRouter);
+app.use("/forgotPassword", passwordRecoveryRouter);
+app.use("/resetPassword", resetPasswordRouter);
+app.use("/saveNewPassword", saveNewPasswordRouter);
 app.use(
   "/loginUser",
   graphqlHTTP({
@@ -74,11 +79,6 @@ app.use(
     graphiql: true,
   })
 );
-// create user
-
-// app.post("/api/createUser", function (req, res) {
-//   axios.post()
-// });
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

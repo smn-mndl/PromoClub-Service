@@ -34,14 +34,17 @@ users.RegisterUsers = (payload) => {
           } else {
             // MongoClient.close();
             return {
-              result: { errorText: "Invalid email", isValid: false },
+              result: { successText: "Invalid email", isValid: false },
               status: "success",
             };
           }
         });
     } else {
       // MongoClient.close();
-      return { result: "Not Valid Data" };
+      return {
+        result: { successText: "Invalid data", isValid: false },
+        status: "success",
+      };
     }
   });
 };
