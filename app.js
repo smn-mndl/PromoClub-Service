@@ -57,7 +57,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/registerUsers", registerRouter);
-// app.use("/loginUser", loginRouter);
+app.use("/loginUser", loginRouter);
 // app.use("/testAPI", testRouter);
 app.use("/testPost", testPostRouter);
 // app.use("/uploadFile", uploadFileRouter);
@@ -72,13 +72,13 @@ app.use("/saveToCart", saveToCartRouter);
 app.use("/forgotPassword", passwordRecoveryRouter);
 app.use("/resetPassword", resetPasswordRouter);
 app.use("/saveNewPassword", saveNewPasswordRouter);
-app.use(
-  "/loginUser",
-  graphqlHTTP({
-    schema: LoginSchema,
-    graphiql: true,
-  })
-);
+// app.use(
+//   "/loginUser",
+//   graphqlHTTP({
+//     schema: LoginSchema,
+//     graphiql: true,
+//   })
+// );
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
